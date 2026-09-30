@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#2b2540">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="manifest" href="manifest.json">
+<title>다혜 주차왕 3D</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="app">
+  <canvas id="gameCanvas"></canvas>
+
+  <div id="hud" class="hidden">
+    <div id="levelLabel">LEVEL 1/4</div>
+    <div id="hudRight">
+      <button id="muteBtn" class="iconBtn" aria-label="소리">🔊</button>
+      <button id="retryBtn" class="iconBtn" aria-label="다시">↺</button>
+    </div>
+  </div>
+
+  <div id="hint"></div>
+  <div id="toast"></div>
+
+  <div id="startScreen" class="overlay">
+    <h1>🚗 다혜 주차왕 3D</h1>
+    <p>손가락으로 차 앞에서부터 원하는 길을<br>쭉 그리면, 차가 그 길을 따라 움직여요.</p>
+    <p class="sub">벽이나 다른 차에 닿지 않게, 하이라이트된<br>주차칸 안에 정확히 세워보세요!</p>
+    <button id="startBtn">시작하기</button>
+    <p id="bestStars" class="best"></p>
+  </div>
+
+  <div id="levelCompleteScreen" class="overlay hidden">
+    <h1>주차 성공! 🎉</h1>
+    <div id="starsRow" class="stars"></div>
+    <p id="attemptsText" class="best"></p>
+    <button id="nextLevelBtn">다음 레벨</button>
+  </div>
+
+  <div id="allClearScreen" class="overlay hidden">
+    <h1>🏆 다혜 주차왕 등극!</h1>
+    <p>상민이가 만든 주차장 4개 코스<br>전부 클리어했어요 축하해요 다혜야 ❤️</p>
+    <div id="totalStarsRow" class="stars"></div>
+    <button id="replayBtn">처음부터 다시하기</button>
+  </div>
+</div>
+<script type="module" src="game.js"></script>
+</body>
+</html>

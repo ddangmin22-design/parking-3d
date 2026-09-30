@@ -1,0 +1,9 @@
+{
+  "name": "다혜 주차왕 3D",
+  "short_name": "주차왕 3D",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#1c1830",
+  "theme_color": "#2b2540",
+  "orientation": "portrait"
+}
