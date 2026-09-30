@@ -20,13 +20,13 @@ var attemptsTextEl = document.getElementById("attemptsText");
 var totalStarsRowEl = document.getElementById("totalStarsRow");
 var bestStarsEl = document.getElementById("bestStars");
 
-var STARS_KEY = "dahyeParking3dStars";
+var STARS_KEY = "parking3dStars";
 
 function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
 
 // ============ sound ============
 var audioCtx = null;
-var MUTE_KEY = "dahyeParking3dMuted";
+var MUTE_KEY = "parking3dMuted";
 var muted = localStorage.getItem(MUTE_KEY) === "1";
 function updateMuteBtn() { muteBtn.textContent = muted ? "🔇" : "🔊"; }
 function ensureAudio() {
@@ -126,28 +126,7 @@ function fitCameraToBounds(bounds) {
 // ============ car mesh builder ============
 var CAR_HALF_LEN = 1.2, CAR_HALF_WID = 0.95;
 
-function makeDecalTexture() {
-  var c = document.createElement("canvas");
-  c.width = 256; c.height = 256;
-  var g = c.getContext("2d");
-  g.clearRect(0, 0, 256, 256);
-  g.fillStyle = "#ffffff";
-  g.font = "bold 30px sans-serif";
-  g.textAlign = "center";
-  g.textBaseline = "middle";
-  g.fillText("상민", 128, 95);
-  g.fillStyle = "#ffd1dc";
-  g.font = "bold 46px sans-serif";
-  g.fillText("♥", 128, 140);
-  g.fillStyle = "#ffffff";
-  g.font = "bold 30px sans-serif";
-  g.fillText("다혜", 128, 190);
-  var tex = new THREE.CanvasTexture(c);
-  tex.needsUpdate = true;
-  return tex;
-}
-
-function createCarMesh(bodyColor, withDecal) {
+function createCarMesh(bodyColor) {
   var group = new THREE.Group();
 
   var bodyGeo = new THREE.BoxGeometry(CAR_HALF_WID * 2, 0.55, CAR_HALF_LEN * 2);
@@ -188,16 +167,6 @@ function createCarMesh(bodyColor, withDecal) {
     lamp.position.set(lx, 0.45, CAR_HALF_LEN - 0.05);
     group.add(lamp);
   });
-
-  if (withDecal) {
-    var decalTex = makeDecalTexture();
-    var decalMat = new THREE.MeshBasicMaterial({ map: decalTex, transparent: true });
-    var decalGeo = new THREE.PlaneGeometry(CAR_HALF_WID * 1.3, CAR_HALF_LEN * 1.0);
-    var decal = new THREE.Mesh(decalGeo, decalMat);
-    decal.rotation.x = -Math.PI / 2;
-    decal.position.set(0, 1.115, -0.05);
-    group.add(decal);
-  }
 
   return group;
 }
@@ -291,10 +260,10 @@ var LEVELS = [
     bounds: { minX: -5, maxX: 5, minZ: -6, maxZ: 6 },
     carStart: { x: -3, z: -4.2, heading: 0 },
     obstacles: [
-      { x: -1.6, z: 2, w: 1.0, d: 2.6, kind: "car" },
-      { x: 1.6, z: 2, w: 1.0, d: 2.6, kind: "car" }
+      { x: -1.85, z: 2, w: 1.0, d: 2.6, kind: "car" },
+      { x: 1.85, z: 2, w: 1.0, d: 2.6, kind: "car" }
     ],
-    target: { x: 0, z: 2, w: 2.0, d: 2.8, angle: 0 }
+    target: { x: 0, z: 2, w: 2.2, d: 2.8, angle: 0 }
   },
   {
     name: "코너 주차",
@@ -314,6 +283,51 @@ var LEVELS = [
       { x: 3.3, z: 2.2, w: 2.6, d: 1.0, kind: "car" }
     ],
     target: { x: 0, z: 2.2, w: 3.0, d: 1.9, angle: Math.PI / 2 }
+  },
+  {
+    name: "지그재그 슬라롬",
+    bounds: { minX: -3.5, maxX: 3.5, minZ: -9, maxZ: 10 },
+    carStart: { x: 0, z: -7, heading: 0 },
+    obstacles: [
+      { x: -1.2, z: -3.5, w: 2.4, d: 1.2, kind: "wall" },
+      { x: 1.2, z: 1.0, w: 2.4, d: 1.2, kind: "wall" },
+      { x: -1.2, z: 5.5, w: 2.4, d: 1.2, kind: "wall" }
+    ],
+    target: { x: 0, z: 8, w: 1.8, d: 2.4, angle: 0 }
+  },
+  {
+    name: "미로 주차",
+    bounds: { minX: -6, maxX: 6, minZ: -8, maxZ: 8.5 },
+    carStart: { x: -2, z: -6, heading: 0 },
+    obstacles: [
+      { x: -2, z: -1, w: 6, d: 0.6, kind: "wall" },
+      { x: 2.4, z: 5, w: 6.8, d: 0.6, kind: "wall" }
+    ],
+    target: { x: -3, z: 6.5, w: 2.0, d: 2.6, angle: 0 }
+  },
+  {
+    name: "좁은 게이트",
+    bounds: { minX: -4.7, maxX: 5.3, minZ: -6.5, maxZ: 6.5 },
+    carStart: { x: 0, z: -4.8, heading: 0 },
+    obstacles: [
+      { x: -3.05, z: -2, w: 3.3, d: 1.0, kind: "wall" },
+      { x: 3.35, z: -2, w: 3.9, d: 1.0, kind: "wall" },
+      { x: -2.3, z: 2, w: 4.8, d: 1.0, kind: "wall" },
+      { x: 4.1, z: 2, w: 2.4, d: 1.0, kind: "wall" }
+    ],
+    target: { x: 1.5, z: 4.8, w: 2.0, d: 2.6, angle: 0 }
+  },
+  {
+    name: "최종 관문",
+    bounds: { minX: -6, maxX: 6, minZ: -8, maxZ: 8 },
+    carStart: { x: -1, z: -6.3, heading: 0 },
+    obstacles: [
+      { x: -4.15, z: -3, w: 3.7, d: 1.0, kind: "wall" },
+      { x: 3.15, z: -3, w: 5.7, d: 1.0, kind: "wall" },
+      { x: -3.3, z: 5, w: 2.6, d: 1.0, kind: "car" },
+      { x: 3.3, z: 5, w: 2.6, d: 1.0, kind: "car" }
+    ],
+    target: { x: 0, z: 5, w: 3.0, d: 1.9, angle: Math.PI / 2 }
   }
 ];
 
@@ -324,7 +338,7 @@ var levelGroup = new THREE.Group();
 scene.add(levelGroup);
 var collisionObstacles = [];
 
-var playerCar = createCarMesh(0xff6b5b, true);
+var playerCar = createCarMesh(0xff6b5b);
 scene.add(playerCar);
 
 var carState = { x: 0, z: 0, heading: 0, animating: false };
@@ -592,7 +606,7 @@ function checkTargetSuccess() {
   var cosA = Math.cos(-t.angle), sinA = Math.sin(-t.angle);
   var localX = dx * cosA + dz * sinA;
   var localZ = -dx * sinA + dz * cosA;
-  return Math.abs(localX) <= t.w / 2 + 0.15 && Math.abs(localZ) <= t.d / 2 + 0.15;
+  return Math.abs(localX) <= t.w / 2 + 0.1 && Math.abs(localZ) <= t.d / 2 + 0.1;
 }
 
 function updateCarAnimation(dt) {
